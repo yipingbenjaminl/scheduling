@@ -1,1 +1,73 @@
-<h1>Hello world! This is Benji's new Github page</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scheduling Algorithm</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    #input-container {
+      margin-bottom: 20px;
+    }
+    #people-input {
+      width: 300px;
+      padding: 5px;
+    }
+    #output {
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Scheduling Algorithm</h1>
+  <div id="input-container">
+    <label for="people-input">Enter people's names (separated by commas):</label>
+    <input type="text" id="people-input" placeholder="Alice, Bob, Charlie, ...">
+    <br>
+    <label for="option-select">Choose an option:</label>
+    <select id="option-select">
+      <option value="1">Everyone gets the same number of weekend shifts</option>
+      <option value="2">People with weekend shifts get fewer overall shifts</option>
+    </select>
+    <br>
+    <button id="schedule-btn">Schedule</button>
+  </div>
+  <pre id="output"></pre>
+
+  <script>
+    const scheduleBtn = document.getElementById('schedule-btn');
+    const peopleInput = document.getElementById('people-input');
+    const optionSelect = document.getElementById('option-select');
+    const output = document.getElementById('output');
+
+    scheduleBtn.addEventListener('click', () => {
+      const peopleNames = peopleInput.value.split(',').map(name => name.trim());
+      const option = parseInt(optionSelect.value);
+
+      if (peopleNames.length > 0) {
+        const weekSchedule = scheduleWeek(peopleNames, option);
+        let scheduleOutput = '';
+
+        for (const day in weekSchedule) {
+          scheduleOutput += `${day}: ${weekSchedule[day].join(', ')}\n`;
+        }
+
+        output.textContent = scheduleOutput;
+      } else {
+        output.textContent = 'Please enter people\'s names.';
+      }
+    });
+
+    function scheduleWeek(people, option) {
+      // Your scheduling algorithm code goes here
+      // ...
+    }
+  </script>
+</body>
+</html>
