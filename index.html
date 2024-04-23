@@ -19,8 +19,17 @@
       width: 300px;
       padding: 5px;
     }
-    #output {
-      white-space: pre-wrap;
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
     }
   </style>
 </head>
@@ -38,13 +47,27 @@
     <br>
     <button id="schedule-btn">Schedule</button>
   </div>
-  <pre id="output"></pre>
+  <table id="schedule-table">
+    <thead>
+      <tr>
+        <th>Person</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script>
     const scheduleBtn = document.getElementById('schedule-btn');
     const peopleInput = document.getElementById('people-input');
     const optionSelect = document.getElementById('option-select');
-    const output = document.getElementById('output');
+    const scheduleTable = document.getElementById('schedule-table').getElementsByTagName('tbody')[0];
 
     // Load the scheduling algorithm from an external file
     const scriptPromise = fetch('scheduling-algorithm.js')
@@ -62,18 +85,43 @@
       if (peopleNames.length > 0) {
         scriptPromise.then(() => {
           const weekSchedule = scheduleWeek(peopleNames, option);
-          let scheduleOutput = '';
-
-          for (const day in weekSchedule) {
-            scheduleOutput += `${day}: ${weekSchedule[day].join(', ')}\n`;
-          }
-
-          output.textContent = scheduleOutput;
+          displaySchedule(weekSchedule);
         });
       } else {
-        output.textContent = 'Please enter people\'s names.';
+        clearSchedule();
+        scheduleTable.innerHTML = '<tr><td colspan="8">Please enter people\'s names.</td></tr>';
       }
     });
+
+    function displaySchedule(schedule) {
+      clearSchedule();
+
+      const allPeople = new Set();
+      for (const day in schedule) {
+        schedule[day].forEach(person => allPeople.add(person));
+      }
+
+      allPeople.forEach(person => {
+        const row = document.createElement('tr');
+        const personCell = document.createElement('td');
+        personCell.textContent = person;
+        row.appendChild(personCell);
+
+        ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].forEach(day => {
+          const dayCell = document.createElement('td');
+          dayCell.textContent = schedule[day].includes(person) ? 'X' : '';
+          row.appendChild(dayCell);
+        });
+
+        scheduleTable.appendChild(row);
+      });
+    }
+
+    function clearSchedule() {
+      while (scheduleTable.firstChild) {
+        scheduleTable.removeChild(scheduleTable.firstChild);
+      }
+    }
   </script>
 </body>
 </html>
