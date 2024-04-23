@@ -46,28 +46,34 @@
     const optionSelect = document.getElementById('option-select');
     const output = document.getElementById('output');
 
+    // Load the scheduling algorithm from an external file
+    const scriptPromise = fetch('scheduling-algorithm.js')
+      .then(response => response.text())
+      .then(scriptText => {
+        const scriptElement = document.createElement('script');
+        scriptElement.textContent = scriptText;
+        document.body.appendChild(scriptElement);
+      });
+
     scheduleBtn.addEventListener('click', () => {
       const peopleNames = peopleInput.value.split(',').map(name => name.trim());
       const option = parseInt(optionSelect.value);
 
       if (peopleNames.length > 0) {
-        const weekSchedule = scheduleWeek(peopleNames, option);
-        let scheduleOutput = '';
+        scriptPromise.then(() => {
+          const weekSchedule = scheduleWeek(peopleNames, option);
+          let scheduleOutput = '';
 
-        for (const day in weekSchedule) {
-          scheduleOutput += `${day}: ${weekSchedule[day].join(', ')}\n`;
-        }
+          for (const day in weekSchedule) {
+            scheduleOutput += `${day}: ${weekSchedule[day].join(', ')}\n`;
+          }
 
-        output.textContent = scheduleOutput;
+          output.textContent = scheduleOutput;
+        });
       } else {
         output.textContent = 'Please enter people\'s names.';
       }
     });
-
-    function scheduleWeek(people, option) {
-      // Your scheduling algorithm code goes here
-      // ...
-    }
   </script>
 </body>
 </html>
